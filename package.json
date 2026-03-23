@@ -1,6 +1,6 @@
 {
   "name": "@philiprehberger/natural-sort",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Natural string sorting — file2 before file10, not after",
   "type": "module",
   "main": "./dist/index.cjs",

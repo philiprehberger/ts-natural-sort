@@ -2,7 +2,7 @@
 
 [![CI](https://github.com/philiprehberger/ts-natural-sort/actions/workflows/ci.yml/badge.svg)](https://github.com/philiprehberger/ts-natural-sort/actions/workflows/ci.yml)
 [![npm version](https://img.shields.io/npm/v/@philiprehberger/natural-sort)](https://www.npmjs.com/package/@philiprehberger/natural-sort)
-[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
+[![License](https://img.shields.io/github/license/philiprehberger/ts-natural-sort)](LICENSE)
 
 Natural string sorting -- file2 before file10, not after.
 
