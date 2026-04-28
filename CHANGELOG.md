@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.2.0
+
+- Add `naturalSortBy(array, key)` strongly-typed shorthand for sorting objects by a string key
+- `naturalCompare` now recognizes leading negative integers (`-10` sorts before `-2`)
+
 ## 0.1.3
 
 - Standardize README to 3-badge format with emoji Support section

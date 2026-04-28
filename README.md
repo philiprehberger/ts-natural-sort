@@ -36,6 +36,19 @@ naturalSort(items, { accessor: (i) => i.name });
 
 // Low-level comparison
 naturalCompare('file2', 'file10'); // negative (file2 < file10)
+
+// Negative numbers sort numerically too
+naturalCompare('-10', '-2'); // negative (-10 < -2)
+```
+
+### Sort by Key
+
+```ts
+import { naturalSortBy } from '@philiprehberger/natural-sort';
+
+const items = [{ name: 'item10' }, { name: 'item2' }, { name: 'item1' }];
+naturalSortBy(items, 'name');
+// => [{ name: 'item1' }, { name: 'item2' }, { name: 'item10' }]
 ```
 
 ## API
@@ -52,9 +65,13 @@ Returns a new sorted array without mutating the original.
 | `descending`      | `boolean`          | `false` | Sort in descending order       |
 | `accessor`        | `(item: T) => string` | -    | Extract string from each item  |
 
+### `naturalSortBy<T>(array: T[], key: keyof T, options?: NaturalSortOptions<T>): T[]`
+
+Type-safe shorthand that infers `string`-typed keys of `T` and sorts by that key.
+
 ### `naturalCompare(a: string, b: string, caseInsensitive?: boolean): number`
 
-Compares two strings using natural ordering. Returns negative, zero, or positive.
+Compares two strings using natural ordering. Returns negative, zero, or positive. Recognizes leading negative integers when not following an alphanumeric character.
 
 ## Development
 

@@ -1,5 +1,21 @@
 import type { NaturalSortOptions } from './types';
 
+function isDigit(code: number): boolean {
+  return code >= 48 && code <= 57;
+}
+
+function isNegativeDigit(s: string, i: number): boolean {
+  // Treat '-' as the start of a number when followed by a digit and either at the
+  // start of the string or preceded by a non-alphanumeric character.
+  if (s.charCodeAt(i) !== 45) return false;
+  if (i + 1 >= s.length) return false;
+  if (!isDigit(s.charCodeAt(i + 1))) return false;
+  if (i === 0) return true;
+  const prev = s.charCodeAt(i - 1);
+  const prevIsAlnum = isDigit(prev) || (prev >= 65 && prev <= 90) || (prev >= 97 && prev <= 122);
+  return !prevIsAlnum;
+}
+
 export function naturalCompare(a: string, b: string, caseInsensitive = false): number {
   const ax = caseInsensitive ? a.toLowerCase() : a;
   const bx = caseInsensitive ? b.toLowerCase() : b;
@@ -8,26 +24,29 @@ export function naturalCompare(a: string, b: string, caseInsensitive = false): n
   let bi = 0;
 
   while (ai < ax.length && bi < bx.length) {
-    const ca = ax.charCodeAt(ai);
-    const cb = bx.charCodeAt(bi);
+    const aIsNeg = isNegativeDigit(ax, ai);
+    const bIsNeg = isNegativeDigit(bx, bi);
+    const aIsNum = aIsNeg || isDigit(ax.charCodeAt(ai));
+    const bIsNum = bIsNeg || isDigit(bx.charCodeAt(bi));
 
-    const aIsDigit = ca >= 48 && ca <= 57;
-    const bIsDigit = cb >= 48 && cb <= 57;
+    if (aIsNum && bIsNum) {
+      const aSign = aIsNeg ? -1 : 1;
+      const bSign = bIsNeg ? -1 : 1;
+      if (aIsNeg) ai++;
+      if (bIsNeg) bi++;
 
-    if (aIsDigit && bIsDigit) {
       let numA = '';
       let numB = '';
-      while (ai < ax.length && ax.charCodeAt(ai) >= 48 && ax.charCodeAt(ai) <= 57) {
-        numA += ax[ai++];
-      }
-      while (bi < bx.length && bx.charCodeAt(bi) >= 48 && bx.charCodeAt(bi) <= 57) {
-        numB += bx[bi++];
-      }
-      const diff = parseInt(numA, 10) - parseInt(numB, 10);
+      while (ai < ax.length && isDigit(ax.charCodeAt(ai))) numA += ax[ai++];
+      while (bi < bx.length && isDigit(bx.charCodeAt(bi))) numB += bx[bi++];
+
+      const diff = aSign * parseInt(numA, 10) - bSign * parseInt(numB, 10);
       if (diff !== 0) return diff;
       continue;
     }
 
+    const ca = ax.charCodeAt(ai);
+    const cb = bx.charCodeAt(bi);
     if (ca !== cb) return ca - cb;
     ai++;
     bi++;
@@ -47,4 +66,14 @@ export function naturalSort<T = string>(
     return naturalCompare(strA, strB, caseInsensitive);
   });
   return descending ? sorted.reverse() : sorted;
+}
+
+type StringKeys<T> = { [K in keyof T]: T[K] extends string ? K : never }[keyof T];
+
+export function naturalSortBy<T extends Record<string, unknown>>(
+  array: T[],
+  key: StringKeys<T>,
+  options?: Omit<NaturalSortOptions<T>, 'accessor'>,
+): T[] {
+  return naturalSort(array, { ...options, accessor: (item) => item[key] as string });
 }

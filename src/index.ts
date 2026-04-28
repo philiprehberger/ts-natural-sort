@@ -1,2 +1,2 @@
-export { naturalSort, naturalCompare } from './sort';
+export { naturalSort, naturalSortBy, naturalCompare } from './sort';
 export type { NaturalSortOptions } from './types';
